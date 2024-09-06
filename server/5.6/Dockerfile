@@ -12,13 +12,15 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN set -eux \
     && apt-get -y update \
     # Install dependencies for griddb
-    && apt-get install -y python3 wget dpkg systemd jq --no-install-recommends \
+    && apt-get install -y python3 wget dpkg systemd jq default-jre --no-install-recommends \
     # Download package griddb server
+    && wget -q https://github.com/griddb/cli/releases/download/v${GRIDDB_VERSION}/griddb-ce-cli_${GRIDDB_VERSION}_amd64.deb --no-check-certificate \
     && wget -q https://github.com/griddb/griddb/releases/download/v${GRIDDB_VERSION}/griddb_${GRIDDB_VERSION}_amd64.deb --no-check-certificate \
     # Check sha512sum package
     && echo "${GRIDDB_DOWNLOAD_SHA512} griddb_${GRIDDB_VERSION}_amd64.deb"| sha512sum --check --strict \
     # Install package griddb server
     && dpkg -i griddb_${GRIDDB_VERSION}_amd64.deb \
+    && dpkg -i griddb-ce-cli_${GRIDDB_VERSION}_amd64.deb \
     # Remove package
     && rm griddb_${GRIDDB_VERSION}_amd64.deb \
     # Delete the apt-get lists after installing something
